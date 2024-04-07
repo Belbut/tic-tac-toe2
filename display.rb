@@ -13,7 +13,7 @@ class Display
   private
 
   def indentation(row_label)
-    "     #{row_label} "
+    "     #{row_label}  ".slice(0..7) # handles the border cases when rows reach two digits
   end
 
   BORDER_GRID_CELL = '---|'.freeze
@@ -49,4 +49,4 @@ class Display
   end
 end
 
-Display.new(Grid.new(5, 5))
+Display.new(Grid.new(15, 5))
