@@ -1,52 +1,74 @@
-require_relative 'grid'
-class Display
-  def initialize(grid_obj)
-    @row_labels = (1..grid_obj.rows).to_a
-    @column_labels = ('A'..'Z').first(grid_obj.column)
-    @header_row = build_row(@column_labels)
-    @border_row = build_row(Array.new(grid_obj.column), is_border: true)
-    @info_row1 = build_row(grid_obj.grid[0])
+# frozen_string_literal: true
 
-    puts build_full(grid_obj)
+# Display module was made to Display in the terminal in a organized way the information of a grid
+module Display
+  def display_data
+    full_display = []
+
+    grid = self.grid
+    full_display.append(generate_column_heading(grid))
+    full_display.append(*generate_rows_with_border(grid))
+    full_display.append(generate_column_heading(grid))
+
+    puts full_display
   end
 
   private
 
-  def indentation(row_label)
-    "     #{row_label}  ".slice(0..7) # handles the border cases when rows reach two digits
+  def generate_column_heading(grid)
+    column_labels = ('A'..'Z').first(grid.size)
+    build_row(column_labels, is_heading: true)
   end
 
-  BORDER_GRID_CELL = '---|'.freeze
+  def generate_border_row(grid)
+    build_row(Array.new(grid.size), is_border: true)
+  end
 
-  def cell_display(info = ' ')
-    " #{info} |"
+  def generate_rows_with_border(grid)
+    rows_with_border = []
+    border_row = generate_border_row(grid)
+
+    grid.each_with_index do |row, index|
+      row_label = (grid.size - index)
+      rows_with_border.append(build_row(row, row_label))
+      rows_with_border.append(border_row)
+    end
+    rows_with_border.pop # remove last border row
+    rows_with_border
+  end
+
+  def left_indentation(row_label)
+    row_label = "#{row_label} "
+    row_label.rjust(8) # left padding
+  end
+
+  def right_indentation(row_label)
+    row_label = " #{row_label}"
+    row_label.ljust(8) # left padding
+  end
+
+  BORDER_GRID_CELL = '---|'
+
+  def cell_display(is_heading, info = ' ')
+    if is_heading
+      " #{info}  "
+    else
+      " #{info} |"
+    end
   end
 
   def border_display
     '---|'
   end
 
-  def build_row(row_data, row_label = ' ', is_border: false)
-    row = indentation(row_label)
+  def build_row(row_data, row_label = ' ', is_border: false, is_heading: false)
+    row = left_indentation(row_label)
     if is_border
       row_data.each { row.concat(border_display) }
     else
-      row_data.each { |cell_info| row.concat(cell_display(cell_info)) }
+      row_data.each { |cell_info| row.concat(cell_display(is_heading, cell_info)) }
     end
-    row.chomp('|')
-  end
-
-  def build_full(grid_obj)
-    full_display = []
-    full_display.append(@header_row, @border_row)
-    grid_obj.grid.each_with_index do |row, index|
-      row_label = (grid_obj.grid.size - index)
-      full_display.append(build_row(row, row_label))
-      full_display.append(@border_row)
-    end
-    full_display.pop
-    full_display
+    row.chomp!('|')
+    row.concat(right_indentation(row_label))
   end
 end
-
-Display.new(Grid.new(15, 5))
