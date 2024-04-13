@@ -2,10 +2,10 @@
 
 # Display module was made to Display in the terminal in a organized way the information of a grid
 module Display
-  def display_data
+  def display_grid
     full_display = []
 
-    grid = self.grid
+    grid = self.grid.transpose
     full_display.append(generate_column_heading(grid))
     full_display.append(*generate_rows_with_border(grid))
     full_display.append(generate_column_heading(grid))
@@ -28,7 +28,7 @@ module Display
     rows_with_border = []
     border_row = generate_border_row(grid)
 
-    grid.each_with_index do |row, index|
+    grid.reverse.each_with_index do |row, index|
       row_label = (grid.size - index)
       rows_with_border.append(build_row(row, row_label))
       rows_with_border.append(border_row)
