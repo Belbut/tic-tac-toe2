@@ -1,21 +1,5 @@
 # frozen_string_literal: true
 
-# GamePlayerInterface
-module GamePlayerInterface
-  def game_introduction
-    'Welcome, this is a simple tic tac toe console game, hope that you  like it!'
-  end
-
-  def get_player_name(player_number)
-    puts "Please input the Player#{player_number} name :"
-    gets.chomp
-  end
-
-  def greeting_player(player_object)
-    puts "Hello #{player_object.name} , your weapon is '#{player_object.symbol}'"
-  end
-end
-
 require_relative 'player'
 require_relative 'grid'
 
