@@ -9,12 +9,16 @@ class Game
 
   attr_reader :grid, :players
 
-  def initialize
+  def initialize(_player1 = Player.new(get_player_name(1), 'x'),
+                 _player2 = Player.new(get_player_name(2), 'o'),
+                 _grid = Grid.new,
+                 _turn = 1)
     @player1 = Player.new(get_player_name(1), 'x')
     @player2 = Player.new(get_player_name(2), 'o')
     @players = [@player1, @player2]
     @grid = Grid.new
     @grid.display_grid
+    @turn = 0
   end
 
   def reset_game
@@ -23,12 +27,12 @@ class Game
     puts 'We reached a stale lets reset the table'
     sleep 3
     @grid = Grid.new
+    @turn = 0
   end
 
   def play
-    turn = 1
     until winner = @grid.winner
-      symbol = (turn % 2).zero? ? @player2.symbol : @player1.symbol
+      symbol = (@turn % 2).zero? ? @player2.symbol : @player1.symbol
       puts "#{@players.find { |player| player.symbol == symbol }.name} turn"
 
       begin
@@ -39,20 +43,20 @@ class Game
         puts e
         puts 'Pick again'
       else
-        turn = check_game_state(turn)
+        @turn = check_game_state
       end
     end
 
     announce_winner(winner)
   end
 
-  def check_game_state(turn)
-    turn += 1
-    if turn >= @grid.rows * @grid.column
+  def check_game_state
+    @turn += 1
+    if @turn >= @grid.rows * @grid.column
       reset_game
-      turn = 1
+      @turn = 1
     end
-    turn
+    @turn
   end
 
   def announce_winner(winner)
@@ -62,5 +66,5 @@ class Game
   end
 end
 
-# game = Game.new
-# game.play
+game = Game.new
+game.play
