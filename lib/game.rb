@@ -9,16 +9,16 @@ class Game
 
   attr_reader :grid, :players
 
-  def initialize(_player1 = Player.new(get_player_name(1), 'x'),
-                 _player2 = Player.new(get_player_name(2), 'o'),
-                 _grid = Grid.new,
-                 _turn = 1)
-    @player1 = Player.new(get_player_name(1), 'x')
-    @player2 = Player.new(get_player_name(2), 'o')
+  def initialize(player1 = Player.new(get_player_name(1), 'x'),
+                 player2 = Player.new(get_player_name(2), 'o'),
+                 grid = Grid.new,
+                 turn = 0)
+    @player1 = player1
+    @player2 = player2
     @players = [@player1, @player2]
-    @grid = Grid.new
+    @grid = grid
     @grid.display_grid
-    @turn = 0
+    @turn = turn
   end
 
   def reset_game
@@ -28,6 +28,7 @@ class Game
     sleep 3
     @grid = Grid.new
     @turn = 0
+    @grid.display_grid
   end
 
   def play
@@ -52,10 +53,7 @@ class Game
 
   def check_game_state
     @turn += 1
-    if @turn >= @grid.rows * @grid.column
-      reset_game
-      @turn = 1
-    end
+    reset_game if @turn >= @grid.rows * @grid.column
     @turn
   end
 
