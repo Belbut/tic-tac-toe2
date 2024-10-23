@@ -9,16 +9,14 @@ class Game
 
   attr_reader :grid, :players
 
-  def initialize(player1 = Player.new(get_player_name(1), 'x'),
-                 player2 = Player.new(get_player_name(2), 'o'),
-                 grid = Grid.new,
-                 turn = 0)
-    @player1 = player1
-    @player2 = player2
+  def initialize(player1 = get_player_name(1),
+                 player2 = get_player_name(2),
+                 grid = Grid.new)
+    @player1 = Player.new(player1, 'x')
+    @player2 = Player.new(player2, 'o')
     @players = [@player1, @player2]
     @grid = grid
-    @grid.display_grid
-    @turn = turn
+    @turn = 0
   end
 
   def reset_game
@@ -32,6 +30,8 @@ class Game
   end
 
   def play
+    @grid.display_grid
+
     until winner = @grid.winner
       symbol = (@turn % 2).zero? ? @player2.symbol : @player1.symbol
       puts "#{@players.find { |player| player.symbol == symbol }.name} turn"
@@ -64,5 +64,5 @@ class Game
   end
 end
 
-game = Game.new
-game.play
+# game = Game.new
+# game.play
