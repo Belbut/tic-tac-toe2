@@ -16,24 +16,17 @@ class Game
     @player2 = Player.new(player2, 'o')
     @players = [@player1, @player2]
     @grid = grid
-    @turn = 0
   end
 
-  def reset_game
-    puts `clear`
-    @grid.display_grid
-    puts 'We reached a stale lets reset the table'
-    sleep 3
-    @grid = Grid.new
-    @turn = 0
-    @grid.display_grid
+  def turn
+    @grid.occupiedCellCount
   end
 
   def play
     @grid.display_grid
 
     until winner = @grid.winner
-      symbol = (@turn % 2).zero? ? @player2.symbol : @player1.symbol
+      symbol = (turn % 2).zero? ? @player2.symbol : @player1.symbol
       puts "#{@players.find { |player| player.symbol == symbol }.name} turn"
 
       begin
@@ -44,17 +37,32 @@ class Game
         puts e
         puts 'Pick again'
       else
-        @turn = check_game_state
+        check_game_state
       end
     end
 
     announce_winner(winner)
   end
 
+  def reset_game
+    display_stalemate
+    clear_board
+  end
+
+  def display_stalemate
+    puts `clear`
+    @grid.display_grid
+    puts 'We reached a stalemate lets reset the table'
+    sleep 3
+  end
+
+  def clear_board
+    @grid = Grid.new
+    @grid.display_grid
+  end
+
   def check_game_state
-    @turn += 1
-    reset_game if @turn >= @grid.rows * @grid.column
-    @turn
+    reset_game if @grid.isFull?
   end
 
   def announce_winner(winner)
@@ -64,5 +72,5 @@ class Game
   end
 end
 
-# game = Game.new
-# game.play
+game = Game.new
+game.play
