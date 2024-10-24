@@ -20,22 +20,25 @@ class Game
 
   def play
     @grid.display_grid
-
     until (winner_symbol = check_game_state)
-      currentPlayer = (turn % 2).zero? ? @player1 : @player2
-      puts "#{currentPlayer.name} turn:"
+      current_player = (turn % 2).zero? ? @player1 : @player2
+      puts "#{current_player.name} turn:"
 
-      begin
-        playerMove = gets.chomp.capitalize
-        @grid.add_symbol(playerMove, symbol)
-        display_board
-      rescue StandardError => e
-        puts e
-        puts 'Pick again'
-      end
+      player_move(current_player)
+      display_board
     end
-
     announce_winner(winner_symbol)
+  end
+
+  def player_move(player)
+    picked_cell = gets.chomp.capitalize
+    begin
+      @grid.add_symbol(picked_cell, player.symbol)
+    rescue StandardError => e
+      puts e
+      puts "You can't chose that, pick again"
+      player_move(player)
+    end
   end
 
   def turn
@@ -76,5 +79,5 @@ class Game
   end
 end
 
-# game = Game.new
-# game.play
+game = Game.new
+game.play
