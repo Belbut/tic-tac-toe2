@@ -21,11 +21,11 @@ class Grid
     @grid = Array.new(rows) { Array.new(column, EMPTY_CELL) }
   end
 
-  def occupiedCellCount
+  def occupied_cell_count
     @grid.flatten.count { |cell| cell != EMPTY_CELL }
   end
 
-  def isFull?
-    occupiedCellCount == @rows * @column
+  def is_full?
+    occupied_cell_count == @rows * @column
   end
 end

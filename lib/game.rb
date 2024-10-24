@@ -18,40 +18,54 @@ class Game
     @grid = grid
   end
 
-  def turn
-    @grid.occupiedCellCount
-  end
-
   def play
     @grid.display_grid
 
-    until winner = @grid.winner
-      symbol = (turn % 2).zero? ? @player2.symbol : @player1.symbol
-      puts "#{@players.find { |player| player.symbol == symbol }.name} turn"
+    until (winner_symbol = check_game_state)
+      currentPlayer = (turn % 2).zero? ? @player1 : @player2
+      puts "#{currentPlayer.name} turn:"
 
       begin
-        @grid.add_symbol(gets.chomp.capitalize, symbol)
-        puts `clear` # Clear screen after a valid move
-        @grid.display_grid
+        playerMove = gets.chomp.capitalize
+        @grid.add_symbol(playerMove, symbol)
+        display_board
       rescue StandardError => e
         puts e
         puts 'Pick again'
-      else
-        check_game_state
       end
     end
 
-    announce_winner(winner)
+    announce_winner(winner_symbol)
+  end
+
+  def turn
+    @grid.occupied_cell_count
+  end
+
+  def check_game_state
+    return @grid.winner if @grid.winner
+
+    reset_game if @grid.is_full?
+  end
+
+  def announce_winner(winner)
+    player_winner = @players.find { |player| player.symbol == winner }
+    puts 'We have a winner!'
+    puts "Congratulations #{player_winner.name}"
+  end
+
+  def display_board
+    puts `clear`
+    @grid.display_grid
   end
 
   def reset_game
-    display_stalemate
+    stalemate
     clear_board
   end
 
-  def display_stalemate
-    puts `clear`
-    @grid.display_grid
+  def stalemate
+    display_board
     puts 'We reached a stalemate lets reset the table'
     sleep 3
   end
@@ -60,17 +74,7 @@ class Game
     @grid = Grid.new
     @grid.display_grid
   end
-
-  def check_game_state
-    reset_game if @grid.isFull?
-  end
-
-  def announce_winner(winner)
-    player_winner = @players.find { |player| player.symbol == winner }
-    puts 'We have a winner!'
-    puts "Congratulations #{player_winner.name}"
-  end
 end
 
-game = Game.new
-game.play
+# game = Game.new
+# game.play
