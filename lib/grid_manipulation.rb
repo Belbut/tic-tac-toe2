@@ -1,5 +1,7 @@
 require_relative 'grid_coordinates'
 
+class InputError < StandardError; end
+
 module GridManipulation
   include GridCoordinates
 
@@ -12,11 +14,9 @@ module GridManipulation
   def write_cell(decomposed_coordinate, symbol)
     x = decomposed_coordinate[:x]
     y = decomposed_coordinate[:y]
-  
-    raise StandardError.new, 'That cell is outside of the board!' if y > @rows || x > @column
-    raise StandardError.new, 'That cell is already filled' unless read_cell(decomposed_coordinate) == ' '
 
-    
+    raise InputError.new, 'That cell is outside of the board!' if y > @rows || x > @column
+    raise InputError.new, 'That cell is already filled' unless read_cell(decomposed_coordinate) == ' '
 
     @grid[x][y] = symbol
     @grid

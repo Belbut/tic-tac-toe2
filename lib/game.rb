@@ -9,11 +9,11 @@ class Game
 
   attr_reader :grid, :players
 
-  def initialize(player1 = get_player_name(1),
-                 player2 = get_player_name(2),
+  def initialize(player1_name = get_player_name(1),
+                 player2_name = get_player_name(2),
                  grid = Grid.new)
-    @player1 = Player.new(player1, 'x')
-    @player2 = Player.new(player2, 'o')
+    @player1 = Player.new(player1_name, 'x')
+    @player2 = Player.new(player2_name, 'o')
     @players = [@player1, @player2]
     @grid = grid
   end
@@ -21,7 +21,7 @@ class Game
   def play
     @grid.display_grid
     until (winner_symbol = check_game_state)
-      current_player = (turn % 2).zero? ? @player1 : @player2
+      current_player = current_player_turn
       puts "#{current_player.name} turn:"
 
       player_move(current_player)
@@ -30,14 +30,18 @@ class Game
     announce_winner(winner_symbol)
   end
 
+  def current_player_turn
+    turn.even? ? @player1 : @player2
+  end
+
   def player_move(player)
-    picked_cell = gets.chomp.capitalize
-    begin
+    loop do
+      picked_cell = gets.chomp.capitalize
       @grid.add_symbol(picked_cell, player.symbol)
-    rescue StandardError => e
+      break
+    rescue InputError => e
       puts e
       puts "You can't chose that, pick again"
-      player_move(player)
     end
   end
 
@@ -64,6 +68,7 @@ class Game
 
   def reset_game
     stalemate
+    change_player_order
     clear_board
   end
 
@@ -73,11 +78,15 @@ class Game
     sleep 3
   end
 
+  def change_player_order
+    @player1, @player2 = @player2, @player1
+  end
+
   def clear_board
     @grid = Grid.new
     @grid.display_grid
   end
 end
 
-game = Game.new
-game.play
+# game = Game.new
+# game.play
