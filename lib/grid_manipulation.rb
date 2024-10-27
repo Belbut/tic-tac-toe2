@@ -3,10 +3,9 @@ require_relative 'grid_coordinates'
 class InputError < StandardError; end
 
 module GridManipulation
-  include GridCoordinates
 
   def add_symbol(raw_coordinate, symbol)
-    write_cell(raw_to_decomposed_coordinate(raw_coordinate), symbol)
+    write_cell(GridCoordinates.raw_to_decomposed_coordinate(raw_coordinate), symbol)
   end
 
   private

@@ -8,7 +8,8 @@ require_relative 'display'
 class Grid
   attr_reader :grid, :rows, :column
 
-  include GridCoordinates
+  extend GridCoordinates
+
   include GridManipulation
   include WinCondition
   include Display
@@ -25,7 +26,11 @@ class Grid
     @grid.flatten.count { |cell| cell != EMPTY_CELL }
   end
 
-  def is_full?
-    occupied_cell_count == @rows * @column
+  def full?
+    occupied_cell_count == size
+  end
+
+  def size
+    @rows * @column
   end
 end

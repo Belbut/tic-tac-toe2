@@ -52,7 +52,7 @@ class Game
   def check_game_state
     return @grid.winner if @grid.winner
 
-    reset_game if @grid.is_full?
+    reset_game if @grid.full?
   end
 
   def announce_winner(winner)
@@ -88,5 +88,5 @@ class Game
   end
 end
 
-# game = Game.new
-# game.play
+game = Game.new
+game.play
