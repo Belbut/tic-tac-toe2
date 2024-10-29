@@ -6,20 +6,25 @@ require_relative 'win_condition'
 require_relative 'display'
 
 class Grid
-  attr_reader :grid, :rows, :column
+  attr_reader :grid
 
   extend GridCoordinates
 
   include GridManipulation
-  include WinCondition
   include Display
 
   EMPTY_CELL = ' '
 
   def initialize(rows = 3, column = 3)
-    @rows = rows
-    @column = column
     @grid = Array.new(rows) { Array.new(column, EMPTY_CELL) }
+  end
+
+  def rows
+    @grid.size
+  end
+
+  def column
+    @grid[0].size
   end
 
   def occupied_cell_count
@@ -31,6 +36,6 @@ class Grid
   end
 
   def size
-    @rows * @column
+    rows * column
   end
 end

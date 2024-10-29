@@ -5,41 +5,41 @@ require_relative 'grid_coordinates'
 module WinCondition
   include GridCoordinates
 
-  def winner(goal = 3)
-    vertical_winner(goal) or horizontal_winner(goal) or diagonal_winner(goal)
+  def winner
+    vertical_winner or horizontal_winner or diagonal_winner
   end
 
   private
 
   # will return the symbol of the winner or nil
-  def winner_of_array(array, goal)
-    (array.size - goal + 1).times do |i|
-      return array[i] if array[i...(i + goal)].uniq.count == 1 && array[i] != ' '
+  def winner_of_array(array)
+    (array.size - @win_condition + 1).times do |i|
+      return array[i] if array[i...(i + @win_condition)].uniq.count == 1 && array[i] != ' '
     end
     nil
   end
 
-  def direction_winner(grid_obj, goal)
+  def direction_winner(grid_obj)
     grid_obj.each do |row|
-      winner = winner_of_array(row, goal)
+      winner = winner_of_array(row)
       return winner unless winner.nil?
     end
     nil
   end
 
-  def vertical_winner(goal)
-    direction_winner(@grid, goal)
+  def vertical_winner
+    direction_winner(@board.grid)
   end
 
-  def horizontal_winner(goal)
-    direction_winner(@grid.transpose, goal)
+  def horizontal_winner
+    direction_winner(@board.grid.transpose)
   end
 
-  def diagonal_winner(goal)
-    direction_winner(all_sub_diagonals(@grid), goal)
+  def diagonal_winner
+    direction_winner(all_sub_diagonals(@board.grid))
   end
 
-  # only works with a n x n grid_array
+  # only works with a [n x n] grid_array
   def all_sub_diagonals(grid_array)
     [*right_hand_diagonals(grid_array), *left_hand_diagonals(grid_array)]
   end
@@ -58,7 +58,7 @@ module WinCondition
 
   def generate_diagonal_combinations(grid_array)
     max = grid_array.size - 1
-    number_of_sub_arrays = 2 * grid_array.size - 1
+    number_of_sub_arrays = (2 * grid_array.size) - 1
     combinations = []
     number_of_sub_arrays.times do |diagonal_index|
       combinations.append(step_diagonal_combinations(diagonal_index, max))

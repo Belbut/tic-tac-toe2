@@ -6,8 +6,9 @@ require_relative 'grid'
 # Game class will initialize the game handle all rounds and check for winning conditions
 class Game
   include GamePlayerInterface
+  include WinCondition
 
-  attr_reader :grid, :players
+  attr_reader :players, :board
 
   def initialize(player1_name = get_player_name(1),
                  player2_name = get_player_name(2),
@@ -15,11 +16,12 @@ class Game
     @player1 = Player.new(player1_name, 'x')
     @player2 = Player.new(player2_name, 'o')
     @players = [@player1, @player2]
-    @grid = grid
+    @board = grid
+    @win_condition = 3
   end
 
   def play
-    @grid.display_grid
+    @board.display_grid
     until (winner_symbol = check_game_state)
       current_player = current_player_turn
       puts "#{current_player.name} turn:"
@@ -37,7 +39,7 @@ class Game
   def player_move(player)
     loop do
       picked_cell = gets.chomp.capitalize
-      @grid.add_symbol(picked_cell, player.symbol)
+      @board.add_symbol(picked_cell, player.symbol)
       break
     rescue InputError => e
       puts e
@@ -46,13 +48,13 @@ class Game
   end
 
   def turn
-    @grid.occupied_cell_count
+    @board.occupied_cell_count
   end
 
   def check_game_state
-    return @grid.winner if @grid.winner
+    return winner if winner
 
-    reset_game if @grid.full?
+    reset_game if @board.full?
   end
 
   def announce_winner(winner)
@@ -63,7 +65,7 @@ class Game
 
   def display_board
     puts `clear`
-    @grid.display_grid
+    @board.display_grid
   end
 
   def reset_game
@@ -83,10 +85,10 @@ class Game
   end
 
   def clear_board
-    @grid = Grid.new
-    @grid.display_grid
+    @board = Grid.new
+    @board.display_grid
   end
 end
 
-game = Game.new
-game.play
+# game = Game.new
+# game.play

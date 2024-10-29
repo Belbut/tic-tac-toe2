@@ -5,10 +5,10 @@ module Display
   def display_grid
     full_display = []
 
-    grid = self.grid.transpose
-    full_display.append(generate_column_heading(grid))
-    full_display.append(*generate_rows_with_border(grid))
-    full_display.append(generate_column_heading(grid))
+    board_display = grid.transpose
+    full_display.append(generate_column_heading(board_display))
+    full_display.append(*generate_rows_with_border(board_display))
+    full_display.append(generate_column_heading(board_display))
 
     puts full_display
   end
